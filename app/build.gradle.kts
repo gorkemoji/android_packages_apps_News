@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -15,6 +16,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
     }
 
     buildTypes {
@@ -36,6 +42,7 @@ dependencies {
     implementation ("com.squareup.retrofit2:retrofit:2.7.2")    // Added Retrofit libraries for Internet connections
     implementation ("com.squareup.retrofit2:converter-gson:2.7.2")
     implementation ("com.squareup.okhttp3:okhttp:3.14.7")
+    implementation ("com.github.bumptech.glide:glide:4.16.0") // Added Glide library for images
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
