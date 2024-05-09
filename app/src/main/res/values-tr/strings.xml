@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Haberler</string>
+    <string name="home">Ev</string>
+    <string name="favorites">Favorilerim</string>
+    <string name="search">Ara</string>
+    <string name="search_button">Ara butonu</string>
+</resources>
