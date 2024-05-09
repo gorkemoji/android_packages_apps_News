@@ -14,10 +14,10 @@
         android:theme="@style/Theme.News"
         tools:targetApi="31">
         <activity
-            android:name=".FavoriteActivity"
+            android:name=".ui.FavoriteActivity"
             android:exported="false" />
         <activity
-            android:name=".NewsActivity"
+            android:name=".ui.NewsActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

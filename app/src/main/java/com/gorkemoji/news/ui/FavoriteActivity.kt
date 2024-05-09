@@ -1,7 +1,8 @@
-package com.gorkemoji.news
+package com.gorkemoji.news.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.gorkemoji.news.R
 
 class FavoriteActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
