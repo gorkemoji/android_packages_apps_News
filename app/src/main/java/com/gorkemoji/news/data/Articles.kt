@@ -22,5 +22,8 @@ data class Articles(
     val date: String,
 
     @SerializedName("content")
-    val content: String?
+    val content: String?,
+
+    @SerializedName("source")
+    val source: Source
 )
