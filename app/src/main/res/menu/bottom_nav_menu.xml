@@ -8,4 +8,8 @@
         android:id="@+id/favorites"
         android:title="@string/favorites"
         android:icon="@drawable/ic_favorite"/>
+    <item
+        android:id="@+id/settings"
+        android:title="@string/settings"
+        android:icon="@drawable/ic_settings"/>
 </menu>

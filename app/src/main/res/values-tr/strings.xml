@@ -5,4 +5,9 @@
     <string name="favorites">Favorilerim</string>
     <string name="search">Ara</string>
     <string name="search_button">Ara butonu</string>
+    <string name="settings">Ayarlar</string>
+    <string name="api_key">API Anahtarı:</string>
+    <string name="save">Kaydet</string>
+    <string name="current_key">Mevcut anahtar:</string>
+    <string name="empty">Boş</string>
 </resources>

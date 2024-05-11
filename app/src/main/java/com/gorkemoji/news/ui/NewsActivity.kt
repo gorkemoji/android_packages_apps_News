@@ -1,6 +1,7 @@
 package com.gorkemoji.news.ui
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -25,6 +26,29 @@ class NewsActivity : AppCompatActivity() {
         binding = ActivityNewsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val apiKey = loadMode("api_key", "keys")
+
+        if (apiKey.isNullOrEmpty()) {
+            binding.srchBtn.isClickable = false
+            binding.srchBtn.isEnabled = false
+        }
+
+        binding.bottomNavigationView.selectedItemId = R.id.home
+
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.favorites -> {
+                    startActivity(Intent(applicationContext, FavoriteActivity::class.java))
+                    true
+                }
+                R.id.settings -> {
+                    startActivity(Intent(applicationContext, SettingsActivity::class.java))
+                    true
+                }
+                else -> false
+            }
+        }
+
         val repository = NewsRepository(RetrofitClient.newsApiService)
         viewModel = NewsViewModel(repository)
 
@@ -38,8 +62,8 @@ class NewsActivity : AppCompatActivity() {
 
         binding.srchBtn.setOnClickListener {
             val query = binding.searchHint.text.toString()
-            if (query.isNotBlank()) {
-                viewModel.getNews(query, 1, "872cbc1ccebf43f883df12f1d231c610")
+            if (query.isNotBlank() && !apiKey.isNullOrEmpty()) {
+                viewModel.getNews(query, 1, apiKey)
             }
         }
 
