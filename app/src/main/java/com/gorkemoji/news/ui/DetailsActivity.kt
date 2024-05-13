@@ -1,5 +1,6 @@
 package com.gorkemoji.news.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.bumptech.glide.Glide
@@ -25,5 +26,19 @@ class DetailsActivity : AppCompatActivity() {
         binding.date.text = article.date
         binding.content.text = article.content
 
+        binding.sourceBtn.setOnClickListener {
+            val intent = Intent(this, WebActivity::class.java)
+            intent.putExtra("article", article)
+            startActivity(intent)
+        }
+
+        binding.backBtn.setOnClickListener { onBackPressed() }
+
+    }
+    @Deprecated("Deprecated in Java",
+        ReplaceWith("super.onBackPressed()", "androidx.appcompat.app.AppCompatActivity")
+    )
+    override fun onBackPressed() {
+        super.onBackPressed()
     }
 }
