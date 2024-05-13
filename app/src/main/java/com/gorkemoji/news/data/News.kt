@@ -10,5 +10,5 @@ data class News(
     val totalResults: Int,
 
     @SerializedName("articles")
-    val articles: List<Articles>
+    val articles: List<Article>
 )

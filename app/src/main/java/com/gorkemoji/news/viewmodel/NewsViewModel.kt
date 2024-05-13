@@ -3,9 +3,8 @@ package com.gorkemoji.news.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.gorkemoji.news.data.Articles
+import com.gorkemoji.news.data.Article
 import com.gorkemoji.news.data.News
-import com.gorkemoji.news.data.Source
 import com.gorkemoji.news.network.NewsRepository
 import com.gorkemoji.news.time.DateConverter
 
@@ -32,11 +31,11 @@ class NewsViewModel(private val repository: NewsRepository) : ViewModel() {
         }
     }
 
-    private fun sortArticlesByPublishedDate(articles: List<Articles>): List<Articles> {
+    private fun sortArticlesByPublishedDate(articles: List<Article>): List<Article> {
         return articles.sortedByDescending { it.date }
     }
 
-    private fun formatArticlesDates(articles: List<Articles>): List<Articles> {
+    private fun formatArticlesDates(articles: List<Article>): List<Article> {
         return articles.map { article ->
             article.copy(date = DateConverter.convertDate(article.date))
         }

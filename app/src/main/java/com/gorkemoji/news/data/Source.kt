@@ -1,6 +1,7 @@
 package com.gorkemoji.news.data
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Source(
     @SerializedName("id")
@@ -8,4 +9,4 @@ data class Source(
 
     @SerializedName("name")
     val sourceName: String,
-)
+) : Serializable

@@ -1,8 +1,10 @@
 package com.gorkemoji.news.data
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-data class Articles(
+data class Article(
     @SerializedName("author")
     val author: String?,
 
@@ -26,4 +28,4 @@ data class Articles(
 
     @SerializedName("source")
     val source: Source
-)
+) : Serializable

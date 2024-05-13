@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gorkemoji.news.R
 import com.gorkemoji.news.adapter.NewsAdapter
+import com.gorkemoji.news.data.Article
 import com.gorkemoji.news.databinding.ActivityNewsBinding
 import com.gorkemoji.news.network.NewsRepository
 import com.gorkemoji.news.network.RetrofitClient
 import com.gorkemoji.news.viewmodel.NewsViewModel
 
-class NewsActivity : AppCompatActivity() {
+class NewsActivity : AppCompatActivity(), NewsAdapter.OnItemClickListener {
 
     private lateinit var binding: ActivityNewsBinding
     private lateinit var viewModel: NewsViewModel
@@ -52,7 +53,7 @@ class NewsActivity : AppCompatActivity() {
         val repository = NewsRepository(RetrofitClient.newsApiService)
         viewModel = NewsViewModel(repository)
 
-        adapter = NewsAdapter()
+        adapter = NewsAdapter(this)
 
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@NewsActivity)
@@ -74,6 +75,11 @@ class NewsActivity : AppCompatActivity() {
         viewModel.error.observe(this) {
             Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show()
         }
+    }
+
+    override fun onItemClick(newsItem: Article) {
+        val intent = Intent(this, DetailsActivity::class.java)
+        startActivity(intent)
     }
 
     private fun loadMode(type: String, file: String): String? {

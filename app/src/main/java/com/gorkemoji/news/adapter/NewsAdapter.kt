@@ -1,23 +1,21 @@
 package com.gorkemoji.news.adapter
 
-import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.gorkemoji.news.data.Articles
-import com.gorkemoji.news.data.Source
+import com.gorkemoji.news.data.Article
 import com.gorkemoji.news.databinding.NewsLayoutBinding
+import com.gorkemoji.news.ui.DetailsActivity
 
-class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
+class NewsAdapter(private val itemClickListener: OnItemClickListener) : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
-    private var articles: List<Articles> = listOf()
-   // private var sources: List<Source> = listOf()
+    private var articles: List<Article> = listOf()
+    private var onItemClickListener: OnItemClickListener? = null
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun setData(articles: List<Articles>) {
+    fun setData(articles: List<Article>) {
         this.articles = articles
-        //this.sources = sources
         notifyDataSetChanged()
     }
 
@@ -28,15 +26,21 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
-        val article = articles[position]
-      //  val source = sources[position]
-        holder.bind(article)
+        val newsItem = articles[position]
+        holder.bind(newsItem)
+
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, DetailsActivity::class.java)
+            intent.putExtra("article", newsItem)
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int = articles.size
 
     inner class NewsViewHolder(private val binding: NewsLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(article: Articles) {
+        fun bind(article: Article) {
             binding.title.text = article.title
             binding.desc.text = article.desc
             binding.date.text = article.date
@@ -46,5 +50,13 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
                 .load(article.urlOfImage)
                 .into(binding.imageView)
         }
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.onItemClickListener = listener
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(newsItem: Article)
     }
 }
