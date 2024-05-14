@@ -3,9 +3,10 @@
     <style name="Base.Theme.News" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimaryDark">?attr/colorOnSecondary</item>
     </style>
     <style name="BottomNavigationStyle" parent="Widget.MaterialComponents.BottomNavigationView">
-        <item name="android:background">?attr/colorOnPrimary</item>
+        <item name="android:background">?attr/colorOnSecondary</item>
     </style>
     <style name="CardStyle" parent="Widget.MaterialComponents.CardView">
         <item name="android:background">@color/cardview_dark_background</item>

@@ -1,23 +1,25 @@
 package com.gorkemoji.news.ui
 
-import android.app.ActivityOptions
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import com.gorkemoji.news.R
-import com.gorkemoji.news.databinding.ActivityNewsBinding
 import com.gorkemoji.news.databinding.ActivitySettingsBinding
+import com.gorkemoji.news.viewmodel.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
+    private lateinit var viewModel: SettingsViewModel
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        viewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
 
         binding.bottomNavigationView.selectedItemId = R.id.settings
 
@@ -35,35 +37,18 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        val apiKey = loadMode("api_key", "keys")
+        val apiKey = viewModel.loadApiKey()
 
-        if (apiKey.isNullOrEmpty())
-            binding.key.text = resources.getText(R.string.empty)
-        else
-            binding.key.text = apiKey
+        if (apiKey.isNullOrEmpty()) binding.key.text = resources.getText(R.string.empty)
+        else binding.key.text = apiKey
 
         binding.key.text = apiKey
 
         binding.saveBtn.setOnClickListener {
             if (!binding.keyHint.text.isNullOrBlank()) {
-                saveMode("api_key", binding.keyHint.text.toString(), "keys")
+                viewModel.saveApiKey(binding.keyHint.text.toString())
                 binding.key.text = binding.keyHint.text
             }
         }
-
-    }
-
-    private fun loadMode(type: String, file: String): String? {
-        val pref : SharedPreferences = applicationContext.getSharedPreferences(file, Context.MODE_PRIVATE)
-
-        return pref.getString(type, "")
-    }
-
-    private fun saveMode(type: String, data: String, file: String) {
-        val pref : SharedPreferences = applicationContext.getSharedPreferences(file, Context.MODE_PRIVATE)
-        val editor : SharedPreferences.Editor = pref.edit()
-
-        editor.putString(type, data)
-        editor.apply()
     }
 }

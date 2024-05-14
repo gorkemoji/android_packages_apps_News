@@ -8,28 +8,34 @@
 
     <ImageButton
         android:id="@+id/backBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="15dp"
         android:src="@drawable/ic_arrow_back"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:tint="?attr/colorOnBackground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/linkBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="15dp"
         android:src="@drawable/ic_create_link"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:tint="?attr/colorOnBackground"
         app:layout_constraintEnd_toStartOf="@id/favoriteBtn"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/favoriteBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="15dp"
         android:src="@drawable/ic_favorite"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:tint="?attr/colorOnBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -128,6 +134,7 @@
         android:layout_marginBottom="10dp"
         android:text="@string/news_source"
         android:textAllCaps="true"
+        app:tint="?attr/colorOnBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

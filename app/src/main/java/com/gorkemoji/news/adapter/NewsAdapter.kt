@@ -9,7 +9,7 @@ import com.gorkemoji.news.data.Article
 import com.gorkemoji.news.databinding.NewsLayoutBinding
 import com.gorkemoji.news.ui.DetailsActivity
 
-class NewsAdapter(private val itemClickListener: OnItemClickListener) : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
+class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
     private var articles: List<Article> = listOf()
     private var onItemClickListener: OnItemClickListener? = null

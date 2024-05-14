@@ -101,7 +101,7 @@ class FavoriteActivity : AppCompatActivity() {
 
         val itemView: View = viewHolder.itemView
 
-        val mBackground = ColorDrawable().apply {
+        ColorDrawable().apply {
             color = Color.parseColor("#b80f0a")
             setBounds((itemView.right + dX).toInt(), itemView.top, itemView.right, itemView.bottom)
             draw(c)

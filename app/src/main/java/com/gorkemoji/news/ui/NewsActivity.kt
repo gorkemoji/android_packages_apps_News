@@ -27,12 +27,16 @@ class NewsActivity : AppCompatActivity(), NewsAdapter.OnItemClickListener {
         binding = ActivityNewsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val repository = NewsRepository(RetrofitClient.newsApiService)
+        viewModel = NewsViewModel(repository)
+
         val apiKey = loadMode("api_key", "keys")
 
         if (apiKey.isNullOrEmpty()) {
             binding.srchBtn.isClickable = false
             binding.srchBtn.isEnabled = false
         }
+        else viewModel.fetchTodayNews(apiKey)
 
         binding.bottomNavigationView.selectedItemId = R.id.home
 
@@ -50,10 +54,7 @@ class NewsActivity : AppCompatActivity(), NewsAdapter.OnItemClickListener {
             }
         }
 
-        val repository = NewsRepository(RetrofitClient.newsApiService)
-        viewModel = NewsViewModel(repository)
-
-        adapter = NewsAdapter(this)
+        adapter = NewsAdapter()
 
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@NewsActivity)
@@ -64,7 +65,7 @@ class NewsActivity : AppCompatActivity(), NewsAdapter.OnItemClickListener {
         binding.srchBtn.setOnClickListener {
             val query = binding.searchHint.text.toString()
             if (query.isNotBlank() && !apiKey.isNullOrEmpty()) {
-                viewModel.getNews(query, 1, apiKey)
+                viewModel.findSearchedNews(query, 1, apiKey)
             }
         }
 

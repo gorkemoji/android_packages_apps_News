@@ -10,7 +10,6 @@ import com.bumptech.glide.Glide
 import com.gorkemoji.news.R
 import com.gorkemoji.news.adapter.FavoriteAdapter
 import com.gorkemoji.news.data.Article
-import com.gorkemoji.news.data.FavoriteNews
 import com.gorkemoji.news.database.AppDatabase
 import com.gorkemoji.news.databinding.ActivityDetailsBinding
 import com.gorkemoji.news.viewmodel.DetailsViewModel
