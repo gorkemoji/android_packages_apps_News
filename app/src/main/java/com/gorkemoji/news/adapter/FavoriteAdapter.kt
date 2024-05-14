@@ -10,7 +10,7 @@ import com.gorkemoji.news.data.FavoriteNews
 import com.gorkemoji.news.databinding.NewsLayoutBinding
 import com.gorkemoji.news.ui.DetailsActivity
 
-class FavoriteAdapter(private val favoriteNewsList: List<FavoriteNews>) :
+class FavoriteAdapter(val favoriteNewsList: MutableList<FavoriteNews>) :
     RecyclerView.Adapter<FavoriteAdapter.FavoriteViewHolder>() {
 
     private var onItemClickListener: FavoriteAdapter.OnItemClickListener? = null
@@ -36,6 +36,14 @@ class FavoriteAdapter(private val favoriteNewsList: List<FavoriteNews>) :
 
     override fun getItemCount(): Int {
         return favoriteNewsList.size
+    }
+
+    fun removeItem(article: Article) {
+        val index = favoriteNewsList.indexOfFirst { it.article == article }
+        if (index != -1) {
+            favoriteNewsList.removeAt(index)
+            notifyItemRemoved(index)
+        }
     }
 
     inner class FavoriteViewHolder(private val binding: NewsLayoutBinding) :

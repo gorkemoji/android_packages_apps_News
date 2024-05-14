@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.gorkemoji.news.R
+import com.gorkemoji.news.adapter.FavoriteAdapter
 import com.gorkemoji.news.data.Article
 import com.gorkemoji.news.data.FavoriteNews
 import com.gorkemoji.news.database.AppDatabase
@@ -13,12 +14,12 @@ import com.gorkemoji.news.databinding.ActivityDetailsBinding
 import kotlinx.coroutines.*
 
 class DetailsActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityDetailsBinding
+    private lateinit var adapter: FavoriteAdapter
 
     private val database by lazy {
         AppDatabase.getDatabase(this)
     }
-
-    private lateinit var binding: ActivityDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +27,12 @@ class DetailsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val article = intent.getSerializableExtra("article") as Article
+        adapter = FavoriteAdapter(mutableListOf())
+
+        checkIfExists(article) { isAlreadyAdded ->
+            if (isAlreadyAdded)
+                binding.favoriteBtn.setImageResource(R.drawable.ic_unfavorite)
+        }
 
         Glide.with(this)
             .load(article.urlOfImage)
@@ -52,28 +59,45 @@ class DetailsActivity : AppCompatActivity() {
         }
 
         binding.favoriteBtn.setOnClickListener {
-            addOrRemoveArticleFromFavorites(article)
-        }
-
-    }
-
-    private fun addOrRemoveArticleFromFavorites(article: Article) {
-        GlobalScope.launch(Dispatchers.Main) {
-            val isAlreadyAdded = withContext(Dispatchers.IO) {
-                database.favoriteNewsDao().getByArticle(article) != null
-            }
-            if (isAlreadyAdded) {
-                //val news = FavoriteNews(article = article, isFavorite = true)
-                //database.favoriteNewsDao().delete(news)
-                showToast(getString(R.string.exists))
-            } else {
-                val news = FavoriteNews(article = article, isFavorite = true)
-                database.favoriteNewsDao().insert(news)
-                showToast(getString(R.string.added_to_favorites))
+            checkIfExists(article) { isAlreadyAdded ->
+                if (!isAlreadyAdded) {
+                    addArticleToFavorites(article)
+                    showToast(getString(R.string.added_to_favorites))
+                }
+                else {
+                   // deleteFromFavorites(article)
+                    showToast(getString(R.string.exists))
+                }
             }
             setResult(RESULT_OK)
         }
     }
+
+    private fun checkIfExists(article: Article, callback: (Boolean) -> Unit) {
+        GlobalScope.launch(Dispatchers.Main) {
+            val isAlreadyAdded = withContext(Dispatchers.IO) {
+                database.favoriteNewsDao().getByArticle(article) != null
+            }
+            callback(isAlreadyAdded)
+        }
+    }
+
+    private fun addArticleToFavorites(article: Article) {
+        GlobalScope.launch(Dispatchers.Main) {
+            val news = FavoriteNews(article = article, isFavorite = true)
+            database.favoriteNewsDao().insert(news)
+            showToast(getString(R.string.added_to_favorites))
+        }
+    }
+
+   /* private fun deleteFromFavorites(article: Article) {
+        val news = FavoriteNews(article = article, isFavorite = false)
+        GlobalScope.launch(Dispatchers.Main) {
+            withContext(Dispatchers.IO) {
+                database.favoriteNewsDao().delete(news)
+            }
+        }
+    }*/
 
     private fun showToast(message: String) {
         Toast.makeText(this@DetailsActivity, message, Toast.LENGTH_SHORT).show()
