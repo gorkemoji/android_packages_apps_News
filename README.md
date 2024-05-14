@@ -7,7 +7,8 @@ Welcome to News, an innovative way to stay updated! It provides an innovative in
 2. Reading the latest news automatically
 3. Exploring and adding to favorites to read easily
 4. Going to source of the news
-5. Works with News API Key
+5. Works with News API Key, you gotta get your own!
+6. Swipe to left to delete the news from favorites section!
 
 ## Used Technologies
 
@@ -41,6 +42,12 @@ Welcome to News, an innovative way to stay updated! It provides an innovative in
 <table>
   <tr>
     <td> <img src="./screenshots/Screenshot_20240514_182704.png" height="400px" width="200px" /></td>
+   </tr> 
+</table>
+
+<table>
+  <tr>
+    <td> <img src="./screenshots/Screenshot_20240514_185412.png" height="400px" width="200px" /></td>
    </tr> 
 </table>
 
