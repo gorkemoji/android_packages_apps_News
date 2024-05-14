@@ -1,35 +1,36 @@
 package com.gorkemoji.news.ui
 
-import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.gorkemoji.news.R
 import com.gorkemoji.news.adapter.FavoriteAdapter
-import com.gorkemoji.news.database.AppDatabase
 import com.gorkemoji.news.databinding.ActivityFavoriteBinding
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
+import com.gorkemoji.news.viewmodel.FavoriteViewModel
+import com.gorkemoji.news.viewmodel.FavoriteViewModelFactory
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 class FavoriteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFavoriteBinding
     private lateinit var adapter: FavoriteAdapter
-    private lateinit var database: AppDatabase
+    private val viewModel: FavoriteViewModel by viewModels {
+        FavoriteViewModelFactory(applicationContext)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,17 +53,14 @@ class FavoriteActivity : AppCompatActivity() {
             }
         }
 
-        database = AppDatabase.getDatabase(this)
-        val favoriteNewsLiveData = database.favoriteNewsDao().getAll()
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = FavoriteAdapter()
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.itemAnimator = DefaultItemAnimator()
 
-        favoriteNewsLiveData.observe(this, Observer { favoriteNewsList ->
-            adapter = FavoriteAdapter(favoriteNewsList.reversed().toMutableList())
-            binding.recyclerView.apply {
-                layoutManager = LinearLayoutManager(this@FavoriteActivity)
-                adapter = this@FavoriteActivity.adapter
-                itemAnimator = DefaultItemAnimator()
-            }
-        })
+        viewModel.favoriteNewsLiveData.observe(this) { favoriteNewsList ->
+            adapter.setData(favoriteNewsList)
+        }
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
@@ -76,10 +74,9 @@ class FavoriteActivity : AppCompatActivity() {
                     ItemTouchHelper.LEFT -> {
                         MainScope().launch {
                             val favoriteNews = adapter.favoriteNewsList[position]
-                            database.favoriteNewsDao().delete(favoriteNews)
-                            adapter.favoriteNewsList.removeAt(position)
-                            adapter.notifyItemRemoved(position)
+                            viewModel.deleteFavoriteNews(favoriteNews)
                         }
+                        showToast(resources.getString(R.string.deleted))
                     }
                 }
             }
@@ -95,15 +92,14 @@ class FavoriteActivity : AppCompatActivity() {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
         }).attachToRecyclerView(binding.recyclerView)
-
     }
 
     private fun setDeleteIcon(c: Canvas, viewHolder: RecyclerView.ViewHolder, dX: Float) {
         Paint().apply {
-            xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+            xfermode = android.graphics.PorterDuffXfermode(android.graphics.PorterDuff.Mode.CLEAR)
         }
 
-        val itemView : View = viewHolder.itemView
+        val itemView: View = viewHolder.itemView
 
         val mBackground = ColorDrawable().apply {
             color = Color.parseColor("#b80f0a")
@@ -111,7 +107,7 @@ class FavoriteActivity : AppCompatActivity() {
             draw(c)
         }
 
-        val deleteDrawable: Drawable? = ContextCompat.getDrawable(this, R.drawable.ic_delete)
+        val deleteDrawable: Drawable? = ContextCompat.getDrawable(this@FavoriteActivity, R.drawable.ic_delete)
         val width: Int = deleteDrawable?.intrinsicWidth ?: 0
         val height: Int = deleteDrawable?.intrinsicHeight ?: 0
 
@@ -124,5 +120,9 @@ class FavoriteActivity : AppCompatActivity() {
 
         deleteDrawable?.bounds = Rect(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom)
         deleteDrawable?.draw(c)
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

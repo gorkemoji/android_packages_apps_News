@@ -5,15 +5,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.gorkemoji.news.data.Article
 import com.gorkemoji.news.data.FavoriteNews
 import com.gorkemoji.news.databinding.NewsLayoutBinding
 import com.gorkemoji.news.ui.DetailsActivity
 
-class FavoriteAdapter(val favoriteNewsList: MutableList<FavoriteNews>) :
-    RecyclerView.Adapter<FavoriteAdapter.FavoriteViewHolder>() {
-
-    private var onItemClickListener: FavoriteAdapter.OnItemClickListener? = null
+class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.FavoriteViewHolder>() {
+    var favoriteNewsList: MutableList<FavoriteNews> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -31,19 +28,14 @@ class FavoriteAdapter(val favoriteNewsList: MutableList<FavoriteNews>) :
             intent.putExtra("article", favoriteNews.article)
             context.startActivity(intent)
         }
-
     }
 
-    override fun getItemCount(): Int {
-        return favoriteNewsList.size
-    }
+    override fun getItemCount(): Int = favoriteNewsList.size
 
-    fun removeItem(article: Article) {
-        val index = favoriteNewsList.indexOfFirst { it.article == article }
-        if (index != -1) {
-            favoriteNewsList.removeAt(index)
-            notifyItemRemoved(index)
-        }
+    fun setData(newList: List<FavoriteNews>) {
+        favoriteNewsList.clear()
+        favoriteNewsList.addAll(newList)
+        notifyDataSetChanged()
     }
 
     inner class FavoriteViewHolder(private val binding: NewsLayoutBinding) :
@@ -59,13 +51,5 @@ class FavoriteAdapter(val favoriteNewsList: MutableList<FavoriteNews>) :
                 .load(favoriteNews.article.urlOfImage)
                 .into(binding.imageView)
         }
-    }
-
-    fun setOnItemClickListener(listener: OnItemClickListener) {
-        this.onItemClickListener = listener
-    }
-
-    interface OnItemClickListener {
-        fun onItemClick(newsItem: Article)
     }
 }

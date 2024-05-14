@@ -27,7 +27,7 @@ class DetailsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val article = intent.getSerializableExtra("article") as Article
-        adapter = FavoriteAdapter(mutableListOf())
+        adapter = FavoriteAdapter()
 
         checkIfExists(article) { isAlreadyAdded ->
             if (isAlreadyAdded)
