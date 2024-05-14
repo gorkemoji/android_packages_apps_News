@@ -3,7 +3,9 @@ package com.gorkemoji.news.ui
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
 import com.gorkemoji.news.R
 import com.gorkemoji.news.adapter.FavoriteAdapter
@@ -11,14 +13,15 @@ import com.gorkemoji.news.data.Article
 import com.gorkemoji.news.data.FavoriteNews
 import com.gorkemoji.news.database.AppDatabase
 import com.gorkemoji.news.databinding.ActivityDetailsBinding
+import com.gorkemoji.news.viewmodel.DetailsViewModel
+import com.gorkemoji.news.viewmodel.DetailsViewModelFactory
 import kotlinx.coroutines.*
 
 class DetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailsBinding
     private lateinit var adapter: FavoriteAdapter
-
-    private val database by lazy {
-        AppDatabase.getDatabase(this)
+    private val viewModel: DetailsViewModel by viewModels {
+        DetailsViewModelFactory(AppDatabase.getDatabase(this))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,9 +32,11 @@ class DetailsActivity : AppCompatActivity() {
         val article = intent.getSerializableExtra("article") as Article
         adapter = FavoriteAdapter()
 
-        checkIfExists(article) { isAlreadyAdded ->
-            if (isAlreadyAdded)
+        viewModel.viewModelScope.launch {
+            val isAlreadyAdded = viewModel.checkIfExists(article)
+            if (isAlreadyAdded) {
                 binding.favoriteBtn.setImageResource(R.drawable.ic_unfavorite)
+            }
         }
 
         Glide.with(this)
@@ -59,45 +64,18 @@ class DetailsActivity : AppCompatActivity() {
         }
 
         binding.favoriteBtn.setOnClickListener {
-            checkIfExists(article) { isAlreadyAdded ->
+            viewModel.viewModelScope.launch {
+                val isAlreadyAdded = viewModel.checkIfExists(article)
                 if (!isAlreadyAdded) {
-                    addArticleToFavorites(article)
+                    viewModel.addArticleToFavorites(article)
                     showToast(getString(R.string.added_to_favorites))
-                }
-                else {
-                   // deleteFromFavorites(article)
+                } else {
                     showToast(getString(R.string.exists))
                 }
-            }
-            setResult(RESULT_OK)
-        }
-    }
-
-    private fun checkIfExists(article: Article, callback: (Boolean) -> Unit) {
-        GlobalScope.launch(Dispatchers.Main) {
-            val isAlreadyAdded = withContext(Dispatchers.IO) {
-                database.favoriteNewsDao().getByArticle(article) != null
-            }
-            callback(isAlreadyAdded)
-        }
-    }
-
-    private fun addArticleToFavorites(article: Article) {
-        GlobalScope.launch(Dispatchers.Main) {
-            val news = FavoriteNews(article = article, isFavorite = true)
-            database.favoriteNewsDao().insert(news)
-            showToast(getString(R.string.added_to_favorites))
-        }
-    }
-
-   /* private fun deleteFromFavorites(article: Article) {
-        val news = FavoriteNews(article = article, isFavorite = false)
-        GlobalScope.launch(Dispatchers.Main) {
-            withContext(Dispatchers.IO) {
-                database.favoriteNewsDao().delete(news)
+                setResult(RESULT_OK)
             }
         }
-    }*/
+    }
 
     private fun showToast(message: String) {
         Toast.makeText(this@DetailsActivity, message, Toast.LENGTH_SHORT).show()
