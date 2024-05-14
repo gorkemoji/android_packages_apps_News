@@ -16,4 +16,5 @@
     <string name="deleted">Deleted from Favorites!</string>
     <string name="added_to_favorites">Added to Favorites!</string>
     <string name="exists">Already added!</string>
+    <string name="share_via">Share via</string>
 </resources>

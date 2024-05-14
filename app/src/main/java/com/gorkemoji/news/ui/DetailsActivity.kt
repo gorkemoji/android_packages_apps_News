@@ -44,6 +44,13 @@ class DetailsActivity : AppCompatActivity() {
 
         binding.backBtn.setOnClickListener { onBackPressed() }
 
+        binding.linkBtn.setOnClickListener {
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plain"
+            shareIntent.putExtra(Intent.EXTRA_TEXT, article.url)
+            startActivity(Intent.createChooser(shareIntent, resources.getString(R.string.share_via)))
+        }
+
         binding.favoriteBtn.setOnClickListener {
             addOrRemoveArticleFromFavorites(article)
         }

@@ -17,4 +17,5 @@
     <string name="deleted">Favorilerden silindi!</string>
     <string name="added_to_favorites">Favorilere eklendi!</string>
     <string name="exists">Zaten ekli!</string>
+    <string name="share_via">Bununla paylaş</string>
 </resources>
