@@ -10,4 +10,11 @@
     <string name="save">Kaydet</string>
     <string name="current_key">Mevcut anahtar:</string>
     <string name="empty">Boş</string>
+    <string name="details">Detaylar</string>
+    <string name="title">Başlık</string>
+    <string name="content">İçerik</string>
+    <string name="news_source">Kaynak</string>
+    <string name="deleted">Favorilerden silindi!</string>
+    <string name="added_to_favorites">Favorilere eklendi!</string>
+    <string name="exists">Zaten ekli!</string>
 </resources>

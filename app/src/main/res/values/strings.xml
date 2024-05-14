@@ -13,4 +13,7 @@
     <string name="title">Title</string>
     <string name="content">Content</string>
     <string name="news_source">News Source</string>
+    <string name="deleted">Deleted from Favorites!</string>
+    <string name="added_to_favorites">Added to Favorites!</string>
+    <string name="exists">Already added!</string>
 </resources>

@@ -1,13 +1,23 @@
 package com.gorkemoji.news.ui
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.gorkemoji.news.R
 import com.gorkemoji.news.data.Article
+import com.gorkemoji.news.data.FavoriteNews
+import com.gorkemoji.news.database.AppDatabase
 import com.gorkemoji.news.databinding.ActivityDetailsBinding
+import kotlinx.coroutines.*
 
 class DetailsActivity : AppCompatActivity() {
+
+    private val database by lazy {
+        AppDatabase.getDatabase(this)
+    }
+
     private lateinit var binding: ActivityDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +44,34 @@ class DetailsActivity : AppCompatActivity() {
 
         binding.backBtn.setOnClickListener { onBackPressed() }
 
+        binding.favoriteBtn.setOnClickListener {
+            addOrRemoveArticleFromFavorites(article)
+        }
+
     }
+
+    private fun addOrRemoveArticleFromFavorites(article: Article) {
+        GlobalScope.launch(Dispatchers.Main) {
+            val isAlreadyAdded = withContext(Dispatchers.IO) {
+                database.favoriteNewsDao().getByArticle(article) != null
+            }
+            if (isAlreadyAdded) {
+                //val news = FavoriteNews(article = article, isFavorite = true)
+                //database.favoriteNewsDao().delete(news)
+                showToast(getString(R.string.exists))
+            } else {
+                val news = FavoriteNews(article = article, isFavorite = true)
+                database.favoriteNewsDao().insert(news)
+                showToast(getString(R.string.added_to_favorites))
+            }
+            setResult(RESULT_OK)
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this@DetailsActivity, message, Toast.LENGTH_SHORT).show()
+    }
+
     @Deprecated("Deprecated in Java",
         ReplaceWith("super.onBackPressed()", "androidx.appcompat.app.AppCompatActivity")
     )
